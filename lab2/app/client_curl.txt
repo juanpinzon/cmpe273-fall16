@@ -1,0 +1,5 @@
+For wsgi
+curl "http://localhost:8000/checkcrime?lat=1.0&lon=-2.0&radius=4.0" \ | python -m json.tool
+
+For flask
+curl "http://localhost:5000/checkcrime?lat=1.0&lon=-2.0&radius=4.0" \ | python -m json.tool
