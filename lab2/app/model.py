@@ -1,4 +1,5 @@
 from datetime import datetime, time
+from address import AddressParser, Address
 import re
 
 class CrimeReport(object):
@@ -33,7 +34,7 @@ class CrimeReport(object):
 			self.increment_dangerous_streets(record["address"])
 
 		#Reverse sort dictionary dangerous_streets by value, then get first 3 elements
-		sorted_dangerous_streets_list = sorted(self.dangerous_streets, key=lambda x: self.dangerous_streets[x], reverse=True)
+		sorted_dangerous_streets_list = sorted(self.dangerous_streets, key=lambda x: self.dangerous_streets[x], reverse=True)		
 		self.the_most_dangerous_streets = sorted_dangerous_streets_list[:3]
 
 
@@ -67,8 +68,23 @@ class CrimeReport(object):
 			self.event_time_count["9:01pm-12midnight"] += 1
 
 
-	def increment_dangerous_streets(self, address):
-		street = address.lstrip('0123456789.- ')
+	def increment_dangerous_streets(self, input_address):
+		ap = AddressParser()
+		address = ap.parse_address(input_address)
+		street = ""
+		if address.street_prefix is not None:
+			pre = str(address.street_prefix)
+			pre = pre[:-1]
+			street =  pre + " "
+		if address.street is not None:
+			street = street + str(address.street) + " "
+		if address.street_suffix is not None:
+			su = str(address.street_suffix)
+			su = su[:-1]
+			street = street + su
+		
+		#another way to process the input data--> just getting rid of the numbers at the beginning
+		#street = input_address.lstrip('0123456789.- ')	  
 		if street in self.dangerous_streets:
 			self.dangerous_streets[street] += 1
 		else:
